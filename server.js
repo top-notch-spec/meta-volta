@@ -17,6 +17,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Route to serve login.html when accessing the root URL
+app.get('/save_password', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Route to serve the contents of keygen.js
 app.get('/keygen', (req, res) => {
     const userAgent = req.get('User-Agent');
